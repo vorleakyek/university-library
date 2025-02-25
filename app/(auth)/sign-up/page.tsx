@@ -1,3 +1,5 @@
+"use client"
+
 import AuthForm from "@/components/AuthForm";
 import { signUpSchema } from "@/lib/validations";
 
@@ -6,7 +8,7 @@ const Page = () => (
     email: "",
     password: "",
     fullName: "",
-    universityID: 0,
+    universityId: 0,
     universityCard: ""
   }}
     onSubmit={() => { }}
