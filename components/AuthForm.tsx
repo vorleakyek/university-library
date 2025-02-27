@@ -2,10 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultValues, useForm, UseFormReturn, FieldValues, SubmitHandler, Path } from "react-hook-form";
-import {z, ZodType} from "zod";
+import { ZodType} from "zod";
 
 import Link from "next/link";
-
 import {
   Form,
   FormControl,
@@ -62,7 +61,7 @@ const AuthForm = <T extends FieldValues>({type, schema, defaultValues, onSubmit}
                     {FIELD_NAMES[field.name as keyof typeof FIELD_NAMES]}
                   </FormLabel>
                   <FormControl>
-                    {field.name === "universityCard" ? (<ImageUpload />) : (
+                    {field.name === "universityCard" ? (<ImageUpload onFileChange={field.onChange}/>) : (
                     <Input
                       required
                       type = {
