@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultValues, useForm, UseFormReturn, FieldValues, SubmitHandler, Path } from "react-hook-form";
 import { ZodType} from "zod";
-
 import Link from "next/link";
 import {
   Form,
@@ -14,8 +13,11 @@ import {
   FormMessage, } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ImageUpload from "./ImageUpload";
+import FileUpload from "./FileUpload";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 
 interface Props<T extends FieldValues> {
   schema: ZodType<T>;
@@ -27,6 +29,8 @@ interface Props<T extends FieldValues> {
 
 const AuthForm = <T extends FieldValues>({type, schema, defaultValues, onSubmit}: Props<T>) => {
 
+  const router = useRouter();
+
   const isSignIn = type === "SIGN_IN";
 
   const form: UseFormReturn<T> = useForm({
@@ -35,7 +39,18 @@ const AuthForm = <T extends FieldValues>({type, schema, defaultValues, onSubmit}
   });
 
 
-  const handleSubmit: SubmitHandler<T> = async (data) => {};
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    const result = await onSubmit(data);
+
+    if (result.success) {
+      toast("Success");
+
+      router.push("/");
+    } else {
+      toast(`Error ${isSignIn ? "signing in" : "signing up"}`);
+    }
+
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -61,7 +76,14 @@ const AuthForm = <T extends FieldValues>({type, schema, defaultValues, onSubmit}
                     {FIELD_NAMES[field.name as keyof typeof FIELD_NAMES]}
                   </FormLabel>
                   <FormControl>
-                    {field.name === "universityCard" ? (<ImageUpload onFileChange={field.onChange}/>) : (
+                    {field.name === "universityCard" ? (<FileUpload
+                      type="image"
+                      accept="image/*"
+                      placeholder="Upload your ID"
+                      folder="ids"
+                      variant="dark"
+                      onFileChange={field.onChange}
+                    />) : (
                     <Input
                       required
                       type = {
@@ -89,8 +111,6 @@ const AuthForm = <T extends FieldValues>({type, schema, defaultValues, onSubmit}
         </Link>
       </p>
     </div>
-
-
   )
 }
 
